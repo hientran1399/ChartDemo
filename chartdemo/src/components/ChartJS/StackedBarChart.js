@@ -82,7 +82,7 @@ class StackedBarChart extends React.Component {
   }
 
   render() {
-    return <canvas ref={this.canvasRef} />;
+    return <canvas ref={this.canvasRef} style={{width: 300}}/>;
   }
 }
 

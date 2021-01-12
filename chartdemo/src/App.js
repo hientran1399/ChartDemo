@@ -7,6 +7,7 @@ import TreeMap from "./components/Nivo/TreeMap";
 import LineChart from "./components/ApexChart/LineChart";
 import LineBrushChart from "./components/ApexChart/BrushChart";
 import TreeMap2 from "./components/ApexChart/TreeMap";
+import PrinterComponent from './components/PrinterComponent'
 
 class App extends React.Component {
   constructor(props) {
@@ -29,6 +30,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+        <PrinterComponent/>
         <div className="main chart-wrapper">
           <BarChart
             data={this.state.feeds[1].data}
