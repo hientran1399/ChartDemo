@@ -119,7 +119,7 @@ class TreeMap extends Component {
         tmp_color.push("#000000");
       } else tmp_color.push(demo_colors[index]);
     });
-    console.log("demo", tmp_color);
+    // console.log("demo", tmp_color);
     this.setState(
       {
         sliderValue: value,
@@ -136,12 +136,12 @@ class TreeMap extends Component {
   };
 
   render() {
-    console.log(
-      "abc",
-      demo_data.map((d) => {
-        return { value: d.y };
-      })
-    );
+    // console.log(
+    //   "abc",
+    //   demo_data.map((d) => {
+    //     return { value: d.y };
+    //   })
+    // );
     return (
       <div>
         <div style={{ width: 500, marginTop: 100, marginLeft: 50 }}>
