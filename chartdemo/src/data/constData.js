@@ -1,5 +1,5 @@
 export const OPERATION = ["Hủy", "Hủy sau", "Thanh toán"];
-export const TRANSACTION_TYPE = ["Bán hàng", "Trả góp", "Thanh toán hóa đơn"];
+export const TRANSACTION_TYPE = ["Bán hàng", "Trả góp"];
 export const PAYMENT_FORM = ["QR", "Thẻ"];
 export const CARD_TYPE = ["Thẻ quốc tế", "Thẻ nội địa"];
 export const BANK = ["VTB", "VCB", "SCB", "EXB", "ACB", "TMCP", "SHB", "HDB", 
@@ -32,4 +32,30 @@ export const CITY = [
 
 export const POS_CODE = ["P1M39124", "P1710766"]
 
-export const MERCHANT = ["VINCOM", "AEON", "CIRCLEK", "FAMIMA", "BSMART"]
+export const MALL = ["CRESCENTMALL", "AEONMALL", "VANHANHMALL"]
+export const MERCHANT = [
+]
+
+export const MAIN_SECTOR = [
+  "CONVENIENCESTORE",
+  "SUPERMARKET",
+  "F&B",
+  "EDUCATION",
+  "FASHION"
+]
+
+export const SECTOR = [
+  "ACCESSORIES",
+  "CARSHOWROOM",
+  "COSMETIC",
+  "DEPARTMENTSTORE",
+  "ELECTRONICS",
+  "ENTERTAINMENT",
+  "F&H",
+  "HEALTH&BEAUTY",
+  "JEWELRY/WATCHES",
+  "SHOES&BAGS",
+  "SPORTINGGOODS",
+  "TOYS",
+  "OTHERS"
+]

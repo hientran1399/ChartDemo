@@ -1,6 +1,6 @@
 import _ from "lodash"
 
-import { MERCHANT, STREET, CITY, RELEASE, CARD_TYPE, CARD_PAYMENT_CARD, BANK } from '../data/constData' 
+import { MERCHANT, MALL, SECTOR, MAIN_SECTOR, STREET, CITY, RELEASE, CARD_TYPE, CARD_PAYMENT_CARD, BANK } from '../data/constData' 
 import address from '../static/address-list-2.txt'
 
 // hàm random cho tất cả những thằng truyền vào list -> trả về value 
@@ -13,14 +13,24 @@ const randomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min; 
 }
 
+const randomString = (length) => {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  let code = ""
+  for(let i = 0; i < length; i++) {
+      code += randomItem(alphabet)
+  }
+  return code
+}
+
 // ----------------------- GENERATE VỊ TRÍ ---------------------------
 const randomDistrict = (district) => {
   if (Math.random() < 0.5) {
-    if (district?.includes("Quận")) 
-      return `Q.${district.slice(5, district.length)}`
-    else if (district?.includes("Huyện")) 
-      return `H.${district.slice(6, district.length)}`
+    if (district.includes("Quận")) 
+      district = `Q.${district.slice(5, district.length)}`
+    else if (district.includes("Huyện")) 
+      district = `H.${district.slice(6, district.length)}`
   }
+  return district
 }
 
 const randomWard = (wardArray) => {
@@ -28,12 +38,13 @@ const randomWard = (wardArray) => {
 
   if (Math.random() < 0.5) {
     if (ward?.includes("Phường")) 
-      return `P.${ward.slice(7, ward.length)}`
+      ward = `P.${ward.slice(7, ward.length)}`
     else if (ward?.includes("Xã")) 
-      return `X.${ward.slice(4, ward.length)}`
+      ward = `X.${ward.slice(3, ward.length)}`
     else if (ward?.includes("Thị trấn")) 
-      return `TT.${ward.slice(10, ward.length)}`
+      ward = `TT.${ward.slice(10, ward.length)}`
   }
+  return ward
 }
 
 const generateAddress = (noSample, callbackFunction) => {
@@ -63,10 +74,9 @@ const generateAddress = (noSample, callbackFunction) => {
       let city = randomItem(CITY)
       let street = randomItem(STREET)
       let number = randomInt(1, 1000)
-
       result.push(`${number} ${street},${ward},${district},${city}`)
-    })
       
+    })
     callbackFunction(result)
   });
 }
@@ -75,7 +85,8 @@ const generateAddress = (noSample, callbackFunction) => {
 const generateAccount = (noAccount, addressList) => {
     let result = {}
     let count = 0
-
+    let tmp = generateMerSec(noAccount, addressList)
+    console.log(tmp)
     _.times(noAccount, () => {
       let mer = randomItem(MERCHANT)
       let acc = mer + '_' + randomInt(0, 9)
@@ -87,7 +98,69 @@ const generateAccount = (noAccount, addressList) => {
         count++
       }
     })
+    // shuffle lai mang truoc khi return
     return result
+
+}
+
+// generate pairs of sector-merchant
+const generateMerSec = (noAccount, addressList) => {
+  let result = {}
+  let noPairs = 70
+  _.times(noPairs, (index) => {
+    let sector = index<=0.7*noPairs ? randomItem(MAIN_SECTOR) : randomItem(SECTOR)
+    let mer = randomString(4)
+    if (!result.hasOwnProperty(mer))
+      result[mer] = sector
+  })
+
+  let pairList = Object.entries(result).sort(() => Math.random() - 0.5)
+
+  console.log('tmp', pairList)
+  let res = []
+  let tmpList = []
+  _.times(3, (index) => {
+    _.times(randomInt(5, 10), () => {
+      let tenant = randomItem(pairList)
+      tmpList.push(tenant)
+      _.times(randomInt(1, 3), (i) => {
+        res.push([MALL[index], tenant[1], `${MALL[index]}_${tenant[0]}${i+1}`, addressList[index]])
+      })
+    })
+  })
+
+  let count = -1
+  let indexAdress = 3
+  let countMer = 0
+  let mer
+
+  for (let index = 0; index < tmpList.length; index++) {
+    let r = randomInt(0, 4)
+    for (let i = 0; i < r; i++) {
+      let t = randomString(2)
+      let k = randomInt(1, 3)
+      for (let j = 0; j < k; j++) {
+        res.push([...tmpList[index], `${tmpList[index][0]}_${tmpList[index][0]}${t}${j+1}`, addressList[indexAdress]])
+      }
+      indexAdress++
+    }
+  }
+
+  while (res.length<noAccount) {
+    let r = randomInt(0, 4)
+    count++
+    if (count === noPairs) break
+    for (let i = 0; i < r; i++) {
+      let t = randomString(2)
+      let k = randomInt(1, 3)
+      for (let j = 0; j < k; j++) {
+        res.push([...pairList[count], `${pairList[count][0]}_${pairList[count][0]}${t}${j+1}`, addressList[indexAdress]])
+      }
+      indexAdress++
+    }
+  }
+  console.log(res)
+  return res
 }
 
 //----------------------- GENERATE NGÀY GIAO DỊCH -------------------
@@ -133,19 +206,12 @@ const generateOperation = (array) => {
 }
 
 // ---------------------- GENERATE MÃ THIẾT BỊ ---------------------
-const generatePosCode = (length) => {
-  const alphabet = "ABCD012EFGHIJK345LMNOPQRS67TUVWXYZ89"
-  let code = ""
-  for(let i = 0; i < length; i++) {
-      code += randomItem(alphabet)
-  }
-  return code
-}
+
 
 // ------------------- GENERATE TÊN CHỦ THẺ ----------------------
 const generateName = () => {
-  let name1 = ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Huỳnh", "Phan", "Vũ","Võ","Đặng", "Bùi", "Đỗ", "Hồ", "Ngô", "Dương", "Lý"];
-  let name2 = ["Anh", "Âu", "An", "Đức", "Trang", "Tuấn", "Bảo", "Bình", "Châu", "Chi", "Dũng", "Dương", "Giang", "Hà", "Hiếu", "Hòa", "Hoàng", "Hiệp", "Hùng", "Hưng", "Minh", "Mỹ", "Ngọc", "Nhi", "Sơn", "Thành", "Thảo", "Hương", "Diệu", "Thi", "Huyền", "Trung", "Trường", "Trinh", "Trang", "Vy", "Yến"];
+  let name1 = ["NGUYEN", "TRAN", "LE", "PHAM", "HOANG", "HUYNH", "PHAN", "VY","VO","DANG", "BUI", "DO", "HO", "NGO", "DUONG", "LY"];
+  let name2 = ["ANH", "AU", "AN", "DUC", "TRANG", "TUAN", "BAO", "BINH", "CHAU", "CHI", "DUNG", "DUONG", "GIANG", "HA", "HIEU", "HOA", "HOANG", "HIEP", "HUNG", "MINH", "MY", "NGOC", "NHI", "SON", "THANH", "THAO", "HUONG", "DIEU", "THI", "HUYEN", "TRUNG", "TRUONG", "TRINH", "TRANG", "VY", "YEN"];
   let name = randomItem(name1) + ' ' + randomItem(name2)
   return name;
 }
@@ -174,7 +240,7 @@ const generateCardInfo = (noSample) => {
     let release = randomItem(RELEASE)
     let cardType, bank, cardPayment;
     bank = randomItem(BANK)
-    let cardNum = cardNumber(6, 9, 13)
+    let cardNum = cardNumber(6, 9, 14)
     let cardName = generateName()
     if (release === 'Trong nước') {
       cardType = randomItem(CARD_TYPE)
@@ -208,11 +274,11 @@ const generateMoney = (noSample) => {
 export { 
   randomItem,
   generateAccount, 
-  generatePosCode,
   generateDate,
   generateAddress,
   generateName,
   generateCardInfo,
   generateMoney,
-  generateOperation
+  generateOperation, 
+  generateMerSec
 }

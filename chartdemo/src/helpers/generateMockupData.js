@@ -5,7 +5,8 @@ import {
   generateCardInfo, 
   generateMoney, 
   randomItem, 
-  generateOperation
+  generateOperation,
+  generateMerSec
 } from './generateMockupHelper'
 
 import { 
@@ -17,36 +18,39 @@ import {
 } from '../data/constData'
 
 
-const generateMockupData = (numberSample, accountList) => {
+const generateMockupData = (numberSample, addressList) => {
   let dateList = generateDate(numberSample)
   let moneyList = generateMoney(numberSample)
+  let accountList = generateMerSec(100, addressList)
   let staticCardList = generateCardInfo(80) // tạo sẵn 80 thẻ
   let result = []
   _.times(numberSample, (index) => {
-    let mer = randomItem(Object.keys(accountList))
-    let branch = randomItem(Object.keys(accountList[mer]))
+    let account = randomItem(accountList)
+    // let mer = randomItem(Object.keys(accountList))
+    // let branch = randomItem(Object.keys(accountList[mer]))
     let card = randomItem(staticCardList) // lấy random 1 thẻ trong số thẻ đã tạo sẵn
     result.push([
-      mer, 
-      branch,
-      accountList[mer][branch],
-      "'" + dateList[index],
-      generateOperation(OPERATION),
-      randomItem(TRANSACTION_TYPE),
-      randomItem(PAYMENT_FORM),
-      card.cardType,
-      "'" + card.cardNum,
-      card.cardName,
-      randomItem(POS_CODE),
-      moneyList[index],
-      card.bank, 
-      card.cardPayment,
-      card.release,
-      "'0909090988",
-      randomItem(PAYMENT_ACTION)
+      index+1,
+      account[0], // tk thanh toan
+      account[2], // tk dang nhap
+      account[1], // sector
+      account[3], // vi tri
+      "'" + dateList[index], // ngay giao dich
+      generateOperation(OPERATION), // loai tac nghiep
+      randomItem(TRANSACTION_TYPE), // loai giao dich
+      randomItem(PAYMENT_FORM), // hinh thuc thanh toan
+      card.cardType, // loai the
+      "'" + card.cardNum, // so the
+      card.cardName, // ten chu the
+      "'" + randomItem(POS_CODE), // ma thiet bi
+      moneyList[index], // tong tien hoa don
+      card.bank, // ngan hang phat hanh
+      card.cardPayment, // loai the thanh toan
+      card.release, // hinh thuc phat hanh
+      "'0909090988",  // sdt khach hang
+      randomItem(PAYMENT_ACTION)  // hinh thuc quet the
     ])
   })
-  console.log(result)
   return result
 }
 
