@@ -59,3 +59,37 @@ export const SECTOR = [
   "TOYS",
   "OTHERS"
 ]
+
+export const MALL_SECTOR = [
+  "ACCESSORIES",
+  "CARSHOWROOM",
+  'CHILDRENFASHION',
+  "COSMETIC",
+  "DEPARTMENTSTORE",
+  'EDUCATION',
+  "ELECTRONICS",
+  "ENTERTAINMENT",
+  'F&B',
+  "FURNITURE&HOMEWARE",
+  "HEALTH&BEAUTY",
+  "JEWELRY/WATCHES",
+  'MENFASHION',
+  'MIXEDFASION',
+  "SHOES&BAGS",
+  "SPORTINGGOODS",
+  'SUPERMARKET',
+  "TOYS",
+  'WOMENFASHION',
+  "OTHERS"
+]
+
+export const PROVINCE = [
+  "Cần Thơ",
+  "Đà Nẵng",
+  "Hải Phòng",
+  "Hà Nội",
+  "TP HCM",
+  "An Giang",
+  "Bà Rịa - Vũng Tàu",
+  "Bắc Giang"
+]

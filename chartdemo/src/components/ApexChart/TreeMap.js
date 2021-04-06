@@ -1,174 +1,95 @@
-import React, { Component } from "react";
-import Chart from "react-apexcharts";
-import Slider from "@material-ui/core/Slider";
+import React from 'react'
+import Chart from 'react-apexcharts'
+import './style.css'
 
-const demo_data = [
-  {
-    x: "New Delhi",
-    y: 218,
-  },
-  {
-    x: "Kolkata",
-    y: 149,
-  },
-  {
-    x: "Mumbai",
-    y: 184,
-  },
-  {
-    x: "Ahmedabad",
-    y: 55,
-  },
-  {
-    x: "Bangaluru",
-    y: 84,
-  },
-  {
-    x: "Pune",
-    y: 31,
-  },
-  {
-    x: "Chennai",
-    y: 70,
-  },
-  {
-    x: "Jaipur",
-    y: 30,
-  },
-  {
-    x: "Surat",
-    y: 44,
-  },
-  {
-    x: "Hyderabad",
-    y: 68,
-  },
-  {
-    x: "Lucknow",
-    y: 28,
-  },
-  {
-    x: "Indore",
-    y: 19,
-  },
-  {
-    x: "Kanpur",
-    y: 29,
-  },
-];
-
-const demo_colors = [
-  "#3B93A5",
-  "#F7B844",
-  "#ADD8C7",
-  "#EC3C65",
-  "#CDD7B6",
-  "#C1F666",
-  "#D43F97",
-  "#1E5D8C",
-  "#421243",
-  "#7F94B0",
-  "#EF6537",
-  "#C0ADDB",
-];
-
-class TreeMap extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      colors: demo_colors,
-      series: [
-        {
-          data: demo_data,
-        },
-      ],
-
-      sliderValue: 0,
-      options: {
-        legend: {
-          show: false,
-        },
-        chart: {
-          height: 350,
-          type: "treemap",
-        },
-        title: {
-          text: "Basic Treemap",
-        },
-        colors: demo_colors,
-        plotOptions: {
-          treemap: {
-            distributed: true,
-            enableShades: false,
-          },
-        },
+function TreeMap(props) {
+  const options = {
+    legend: {
+      show: true,
+    },
+    // chart: {
+    //   height: 350,
+    //   type: "treemap",
+    // },
+    title: {
+      text: "Treemap",
+    },
+    // colors: demo_colors,
+    plotOptions: {
+      treemap: {
+        // distributed: true,
+        // enableShades: false,
       },
-    };
-    this.setState({
-      options: {
-        colors: this.state.colors,
-      },
-    });
-  }
-
-  handleSliderChange = (e, value) => {
-    //const tmp_color = demo_colors.c;
-    let tmp_color = [];
-    demo_data.forEach((element, index) => {
-      if (element.y < value) {
-        tmp_color.push("#000000");
-      } else tmp_color.push(demo_colors[index]);
-    });
-    // console.log("demo", tmp_color);
-    this.setState(
-      {
-        sliderValue: value,
-        options: {
-          ...this.state.options,
-          colors: tmp_color,
-        },
-        colors: tmp_color,
-      },
-      () => {
-        //console.log(this.state.options.colors);
+    },
+    // annotations: {
+    //   points: {
+    //     label: {
+    //       // text: 'abc'
+    //     }
+    //   }
+    // }
+    style: {
+      fontFamily: 'Helvetica, Arial, sans-serif',
+    },
+    tooltip: {
+      custom: function({series, seriesIndex, dataPointIndex, w}) {
+        let dataPoint = w.globals.initialSeries[seriesIndex].data[dataPointIndex]
+        // {x: "Đường 34", y: 67} 
+        let street = dataPoint.x
+        let value = dataPoint.y
+        let district = w.globals.seriesNames[seriesIndex]
+        let color = w.globals.colors[seriesIndex]  
+        let trend = props.trend[seriesIndex][dataPointIndex]
+        let colorTrend = '#00d150'
+        let arrow = '&#8593'
+        if (trend<0) {
+          colorTrend = 'red'
+          arrow = '&#8595'
+          trend *=-1
+        }
+        else if (trend === 0) {
+          arrow = '-'
+          colorTrend = 'rgb(255, 204, 0)'
+        }
+        
+        return (
+          `<div class="tooltipContainer" style='--btn-bg-color:${color}; --trend-color:${colorTrend}'>
+            <h3 class="district">${district}</h3>
+            <span>${street} : </span>
+            <span style='font-weight:bold;'>${value}</span>
+            <span class='arrow'>${arrow}</span>
+            <span class='trend'>${trend}%</span>
+          </div>`
+        )
       }
-    );
-  };
-
-  render() {
-    // console.log(
-    //   "abc",
-    //   demo_data.map((d) => {
-    //     return { value: d.y };
-    //   })
-    // );
-    return (
-      <div>
-        <div style={{ width: 500, marginTop: 100, marginLeft: 50 }}>
-          <Slider
-            defaultValue={this.state.sliderValue}
-            aria-labelledby="discrete-slider-small-steps"
-            step={1}
-            marks={demo_data.map((d) => {
-              return { value: d.y };
-            })}
-            min={0}
-            max={220}
-            valueLabelDisplay="auto"
-            value={this.state.sliderValue}
-            onChange={this.handleSliderChange}
-          />
-        </div>
-        <Chart
-          options={this.state.options}
-          colors={this.state.colors}
-          series={this.state.series}
-          type="treemap"
-          width="500"
-        />
-      </div>
-    );
+    }
   }
+
+  return (
+    <>
+      {
+        !props.data ? null 
+        :
+        <Chart
+          options={options}
+          // colors={state.colors}
+          series={props.data}
+          type="treemap"
+          width="900"
+          height='500'
+        />
+      }
+    </>
+  )
 }
 
-export default TreeMap;
+export default TreeMap
+
+const styles = {
+  tooltip: {
+    padding: 10,
+    backgroundColor: 'yellow'
+    // position: 'relative', 
+    // border: '2px solid #000000'
+  }
+}

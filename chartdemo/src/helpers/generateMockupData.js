@@ -21,9 +21,17 @@ import {
 const generateMockupData = (numberSample, addressList) => {
   let dateList = generateDate(numberSample)
   let moneyList = generateMoney(numberSample)
-  let accountList = generateMerSec(100, addressList)
-  let staticCardList = generateCardInfo(80) // tạo sẵn 80 thẻ
+  let tmpList =  generateMerSec(100, addressList)
+  let accountList = tmpList.res
+  let categoryList = tmpList.categoryList
+  let staticCardList = generateCardInfo(500) // tạo sẵn 80 thẻ
   let result = []
+  result.push([
+    'STT', 'TK thanh toán', 'TK đăng nhập', 'Sector', 'Vị trí', 'Ngày giao dịch',
+    'Loại tác nghiệp', 'Loại giao dịch', 'Hình thức thanh toán', 'Loại thẻ',
+    'Số thẻ', 'Tên chủ thẻ', 'Mã thiết bị', 'Tổng tiền đơn hàng', 'Ngân hàng phát hành', 
+    'Loại thẻ thanh toán', 'Hình thức phát hành', 'SĐT KH', 'Hình thức quẹt thẻ',
+  ])
   _.times(numberSample, (index) => {
     let account = randomItem(accountList)
     // let mer = randomItem(Object.keys(accountList))
@@ -51,7 +59,7 @@ const generateMockupData = (numberSample, addressList) => {
       randomItem(PAYMENT_ACTION)  // hinh thuc quet the
     ])
   })
-  return result
+  return { result, categoryList }
 }
 
 export default generateMockupData

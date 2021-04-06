@@ -1,6 +1,6 @@
 import _ from "lodash"
 
-import { MERCHANT, MALL, SECTOR, MAIN_SECTOR, STREET, CITY, RELEASE, CARD_TYPE, CARD_PAYMENT_CARD, BANK } from '../data/constData' 
+import { MERCHANT, MALL, SECTOR, MAIN_SECTOR, STREET, CITY, RELEASE, CARD_TYPE, CARD_PAYMENT_CARD, BANK, MALL_SECTOR } from '../data/constData' 
 import address from '../static/address-list-2.txt'
 
 // hàm random cho tất cả những thằng truyền vào list -> trả về value 
@@ -106,61 +106,69 @@ const generateAccount = (noAccount, addressList) => {
 // generate pairs of sector-merchant
 const generateMerSec = (noAccount, addressList) => {
   let result = {}
-  let noPairs = 70
+  let noPairs = 20
   _.times(noPairs, (index) => {
-    let sector = index<=0.7*noPairs ? randomItem(MAIN_SECTOR) : randomItem(SECTOR)
+    // let sector = index<=0.7*noPairs ? randomItem(MAIN_SECTOR) : randomItem(SECTOR)
+    let sector = randomItem(MALL_SECTOR)
     let mer = randomString(4)
     if (!result.hasOwnProperty(mer))
       result[mer] = sector
   })
 
   let pairList = Object.entries(result).sort(() => Math.random() - 0.5)
+  console.log('pairList', pairList)
 
-  console.log('tmp', pairList)
+  let categoryList = []
+
   let res = []
   let tmpList = []
   _.times(3, (index) => {
-    _.times(randomInt(5, 10), () => {
+    _.times(randomInt(10, 20), () => {
       let tenant = randomItem(pairList)
       tmpList.push(tenant)
-      _.times(randomInt(1, 3), (i) => {
-        res.push([MALL[index], tenant[1], `${MALL[index]}_${tenant[0]}${i+1}`, addressList[index]])
-      })
+      categoryList.push([`${MALL[index]}_${tenant[0]}`, tenant[1]])
+      res.push([MALL[index], 'SHOPPINGMALL', `${MALL[index]}_${tenant[0]}`, addressList[index]])
+      
+      // _.times(randomInt(1, 3), (i) => {
+      //   res.push([MALL[index], 'SHOPPINGMALL', `${MALL[index]}_${tenant[0]}${i+1}`, addressList[index]])
+      // })
     })
   })
 
+
+
   let count = -1
   let indexAdress = 3
-  let countMer = 0
-  let mer
 
-  for (let index = 0; index < tmpList.length; index++) {
-    let r = randomInt(0, 4)
-    for (let i = 0; i < r; i++) {
-      let t = randomString(2)
-      let k = randomInt(1, 3)
-      for (let j = 0; j < k; j++) {
-        res.push([...tmpList[index], `${tmpList[index][0]}_${tmpList[index][0]}${t}${j+1}`, addressList[indexAdress]])
-      }
-      indexAdress++
-    }
-  }
+  // for (let index = 0; index < tmpList.length; index++) {
+  //   let r = randomInt(0, 4)
+  //   for (let i = 0; i < r; i++) {
+  //     let t = randomString(2)
+  //     let k = randomInt(1, 3)
+  //     for (let j = 0; j < k; j++) {
+  //       res.push([...tmpList[index], `${tmpList[index][0]}_${tmpList[index][0]}${t}${j+1}`, addressList[indexAdress]])
+  //     }
+  //     indexAdress++
+  //   }
+  // }
 
-  while (res.length<noAccount) {
-    let r = randomInt(0, 4)
-    count++
-    if (count === noPairs) break
-    for (let i = 0; i < r; i++) {
-      let t = randomString(2)
-      let k = randomInt(1, 3)
-      for (let j = 0; j < k; j++) {
-        res.push([...pairList[count], `${pairList[count][0]}_${pairList[count][0]}${t}${j+1}`, addressList[indexAdress]])
-      }
-      indexAdress++
-    }
-  }
-  console.log(res)
-  return res
+  console.log('res', res)
+
+  // while (res.length<noAccount) {
+  //   let r = randomInt(0, 4)
+  //   count++
+  //   if (count === noPairs) break
+  //   for (let i = 0; i < r; i++) {
+  //     let t = randomString(2)
+  //     let k = randomInt(1, 3)
+  //     for (let j = 0; j < k; j++) {
+  //       res.push([...pairList[count], `${pairList[count][0]}_${pairList[count][0]}${t}${j+1}`, addressList[indexAdress]])
+  //     }
+  //     indexAdress++
+  //   }
+  // }
+
+  return { res, categoryList }
 }
 
 //----------------------- GENERATE NGÀY GIAO DỊCH -------------------
@@ -185,7 +193,7 @@ const generateDate = (noSample) => {
   
   // generate List date kiểu Date
   _.times(noSample, () => {
-      result.push(getDate(new Date(2019, 0, 1), new Date()))
+      result.push(getDate(new Date(2019, 1, 25), new Date()))
   })
 
   // Sort lại: ascending sort
@@ -273,6 +281,8 @@ const generateMoney = (noSample) => {
 
 export { 
   randomItem,
+  randomInt, 
+  randomString,
   generateAccount, 
   generateDate,
   generateAddress,
